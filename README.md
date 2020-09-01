@@ -41,7 +41,7 @@
 5. Press `ctrl+c` to stop the frontend
 
 
-## Editing Backend is VScode
+## Editing Backend in VScode
 1. Launch VCcode from project folder `fullstack`
 2. Navigate to backend
 3. Open the file `/bin/www`
@@ -97,10 +97,62 @@
 
     // catch 404 and forward to error handler
     app.use(function(req, res, next) {
-    next(createError(404));
+        next(createError(404));
     });
     ```
 8. Install cors locally. Navigate to `backend` folder
     ```
     $ sudo npm install cors
+    ```
+9. Open browser and navigate to [http://localhost:7000/mypage](http://localhost:7000/mypage). You should see
+    ```
+    I am sending this DATA from backend to Frontend
+    ```
+
+## Editing Frontend in VSCode
+1. Navigate to frontend
+2. Open `/src/App.js`. Delete everything and copy the following
+    ```
+    import React from 'react';
+    import logo from './logo.svg';
+    import './App.css';
+
+    class App extends React.Component {
+        constructor(props){
+            super(props);
+            this.state = { serverResponse: "" };
+        }
+
+        callAPIServer() {
+            fetch("http://localhost:7000/mypage")
+            .then(res => res.text())
+            .then(res => this.setState({ serverResponse: res }))
+            .catch(err => err);
+        }
+
+        componentDidMount() { // react lifecycle method componentDidMount()
+            // will execute the callAPIServer() methods afteer the component mounts
+            this.callAPIServer();
+        }
+
+        render() {
+            return (
+                <div className="App">
+                    <header className="App-header">
+                    <img src={logo} className="App-logo" alt="logo" />
+                    <h1 className="App-title">Welcome to FintechSG React Course</h1>
+                    <h2 className="App-intro">{this.state.serverResponse}</h2>
+                    </header>
+                </div>
+            )
+        }
+    }
+
+    export default App;
+    ```
+9. Open browser and navigate to [http://localhost:3000](http://localhost:3000). You should see
+    ```
+           Welcome to FintechSG React Course
+
+    I am sending this DATA from backend to Frontend
     ```
