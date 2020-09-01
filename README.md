@@ -65,3 +65,42 @@
 
     module.exports = router;
     ```
+7. Open app.js and `add this line` 
+    ```
+    var createError = require('http-errors');
+    var express = require('express');
+    var path = require('path');
+    var cookieParser = require('cookie-parser');
+    var logger = require('morgan');
+    var cors = require("cors");   // add this line
+
+    var indexRouter = require('./routes/index');
+    var usersRouter = require('./routes/users');
+    var mypageRouter = require('./routes/mypage');  // add this line
+
+    var app = express();
+
+    // view engine setup
+    app.set('views', path.join(__dirname, 'views'));
+    app.set('view engine', 'pug');
+
+    app.use(logger('dev'));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: false }));
+    app.use(cookieParser());
+    app.use(express.static(path.join(__dirname, 'public')));
+
+    app.use(cors());  // add this line
+    app.use('/', indexRouter);
+    app.use('/users', usersRouter);
+    app.use('/mypage', mypageRouter);  // add this line
+
+    // catch 404 and forward to error handler
+    app.use(function(req, res, next) {
+    next(createError(404));
+    });
+    ```
+8. Install cors locally. Navigate to `backend` folder
+    ```
+    $ sudo npm install cors
+    ```
