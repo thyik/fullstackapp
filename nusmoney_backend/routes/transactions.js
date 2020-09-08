@@ -22,8 +22,8 @@ AddUser()
 router.post("/", (request, response) => {
   console.log(request.body);
   //
-  connection.query(`INSERT INTO accounts(user_id, acct_type, acct_number, balance, date_created, max_limit) 
-  VALUES (${request.body.userid},'${request.body.type}', '${request.body.account_no}', ${request.body.balance}, ${request.body.date}, ${request.body.max_limit})`, 
+  connection.query(`INSERT INTO transactions (acct_number, id, date, type, amount) 
+  VALUES ('${request.body.account_no}', ${request.body.date}, '${request.body.type}', ${request.body.amount})`, 
   (err, result) => {
       if (err) {
           response.send("Some record error occur");
@@ -39,7 +39,7 @@ router.post("/", (request, response) => {
 router.get("/", (request, response) => {
   console.log(request.body);
   //
-    strQuery = "SELECT * FROM accounts";
+    strQuery = "SELECT * FROM transactions";
   if (request.body.limit > 0) {
       strQuery += ` LIMIT ${request.body.limit}`
   }
