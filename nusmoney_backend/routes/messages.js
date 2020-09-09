@@ -2,28 +2,12 @@ const express = require('express');
 const router = express.Router();
 const connection = require("../connection");
 
-/* GET users listing. */
-/* router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-}); */
-
-/* 
-AddUser()
- POST route for /accounts 
-  with body = {
-    "id":598,
-    "type": "saving",
-    "account_no": "111222333",
-    "balance": "500",
-    "date" : "2020-09-11",
-    "max_limit": "10000"
-}
-*/
+// add message
 router.post("/", (request, response) => {
   console.log(request.body);
   //
-  connection.query(`INSERT INTO messages (user_id, id, date, remark) 
-  VALUES (${request.body.userid}, ${request.body.id}, ${request.body.date}, ${request.body.remark})`, 
+  connection.query(`INSERT INTO messages (user_id, date, remark) 
+  VALUES (${request.body.id}, NOW(), '${request.body.message}')`, 
   (err, result) => {
       if (err) {
           response.send("Some record error occur");
@@ -34,7 +18,22 @@ router.post("/", (request, response) => {
   });
 });
 
-// ShowAccounts()
+// delete message
+router.delete("/", (request, response) => {
+  console.log(request.body);
+  //
+  connection.query(`DELETE FROM messages WHERE id = ${request.body.message_id}`, 
+  (err, result) => {
+      if (err) {
+          response.send("Some record error occur");
+      }
+      else {
+          response.send(result);
+      }    
+  });
+});
+
+// ShowMessages()
 // GET route for /messages query (AddUser)
 router.get("/", (request, response) => {
   console.log(request.body);

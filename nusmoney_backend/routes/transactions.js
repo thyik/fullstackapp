@@ -2,27 +2,11 @@ const express = require('express');
 const router = express.Router();
 const connection = require("../connection");
 
-/* GET users listing. */
-/* router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-}); */
-
-/* 
-AddUser()
- POST route for /accounts 
-  with body = {
-    "id":598,
-    "type": "saving",
-    "account_no": "111222333",
-    "balance": "500",
-    "date" : "2020-09-11",
-    "max_limit": "10000"
-}
-*/
+// add a transaction
 router.post("/", (request, response) => {
   console.log(request.body);
   //
-  connection.query(`INSERT INTO transactions (acct_number, id, date, type, amount) 
+  connection.query(`INSERT INTO transactions (acct_number, date, type, amount) 
   VALUES ('${request.body.account_no}', ${request.body.date}, '${request.body.type}', ${request.body.amount})`, 
   (err, result) => {
       if (err) {
@@ -34,8 +18,23 @@ router.post("/", (request, response) => {
   });
 });
 
-// ShowAccounts()
-// GET route for /accounts query (AddUser)
+// delete a transaction
+router.delete("/", (request, response) => {
+  console.log(request.body);
+  //
+  connection.query(`DELETE FROM transactions WHERE id = ${request.body.id}`, 
+  (err, result) => {
+      if (err) {
+          response.send("Some record error occur");
+      }
+      else {
+          response.send(result);
+      }    
+  });
+});
+
+// ShowTransactions()
+// GET route for /transactions query (AddUser)
 router.get("/", (request, response) => {
   console.log(request.body);
   //
@@ -43,6 +42,120 @@ router.get("/", (request, response) => {
   if (request.body.limit > 0) {
       strQuery += ` LIMIT ${request.body.limit}`
   }
+
+  connection.query(strQuery, 
+  (err, result) => {
+      if (err) {
+          response.send("Some error occur");
+      }
+      else {
+          response.send(result);
+      }    
+  });
+});
+
+// GetTransactionByAccount
+// GET route for /transactions query (AddUser)
+router.get("/account", (request, response) => {
+  console.log(request.body);
+  //
+  strQuery = `SELECT * FROM transactions WHERE acct_number = '${request.body.account_no}'`;
+
+  connection.query(strQuery, 
+  (err, result) => {
+      if (err) {
+          response.send("Some error occur");
+      }
+      else {
+          response.send(result);
+      }    
+  });
+});
+
+// GetTransactionByUserId
+// GET route for /transactions query (AddUser)
+router.get("/id", (request, response) => {
+  console.log(request.body);
+  //
+  strQuery = `SELECT a.user_id, t.* FROM transactions AS t
+  INNER JOIN accounts AS a
+  ON a.acct_number = t.acct_number
+  WHERE t.acct_number 
+  IN (SELECT acct_number FROM accounts WHERE user_id = ${request.body.id})`;
+
+  connection.query(strQuery, 
+  (err, result) => {
+      if (err) {
+          response.send("Some error occur");
+      }
+      else {
+          response.send(result);
+      }    
+  });
+});
+
+// GetUsersAverageMonthly
+// GET route for /transactions query (AddUser)
+router.get("/useravemonthly", (request, response) => {
+  console.log(request.body);
+  //
+  strQuery = `SELECT a.user_id, t.date, AVG(t.amount)
+  FROM transactions AS t
+  INNER JOIN accounts AS a
+  ON a.acct_number = t.acct_number
+  GROUP BY a.user_id, MONTH(t.date), YEAR(date)
+  ORDER BY a.user_id`;
+
+  connection.query(strQuery, 
+  (err, result) => {
+      if (err) {
+          response.send("Some error occur");
+      }
+      else {
+          response.send(result);
+      }    
+  });
+});
+
+// GetTopSpender
+// GET route for /transactions query (AddUser)
+router.get("/top", (request, response) => {
+  console.log(request.body);
+  //
+  strQuery = `SELECT a.user_id, u.name, a.acct_number, t.date, COUNT(a.user_id) as cmonth
+  FROM transactions AS t
+  INNER JOIN accounts AS a
+  ON a.acct_number = t.acct_number
+  INNER JOIN users AS u
+  ON u.user_id = a.user_id
+  GROUP BY a.user_id, MONTH(t.date), YEAR(t.date)
+  ORDER BY cmonth DESC
+  LIMIT 1`;
+
+  connection.query(strQuery, 
+  (err, result) => {
+      if (err) {
+          response.send("Some error occur");
+      }
+      else {
+          response.send(result);
+      }    
+  });
+});
+
+// GetTypeSpending
+// GET route for /transactions query 
+router.get("/type", (request, response) => {
+  console.log(request.body);
+  //
+  strQuery = `SELECT t1.user_id, t1.ttype, MAX(t1.ctype)
+  FROM (SELECT a.user_id, a.acct_number, t.date, t.type as ttype, COUNT(t.type) as ctype
+        FROM transactions AS t
+        INNER JOIN accounts AS a
+        ON a.acct_number = t.acct_number
+        GROUP BY a.user_id, t.type
+        ORDER BY a.user_id) as t1
+  GROUP BY t1.user_id`;
 
   connection.query(strQuery, 
   (err, result) => {
