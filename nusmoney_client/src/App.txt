@@ -1,0 +1,64 @@
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { serverResponse: "", user: [] };
+    }
+
+    callAPIServer() {
+        let bodyData = {
+            limit: 12,
+        };
+
+        console.log(JSON.stringify(bodyData));
+        fetch("http://localhost:7000/users", {
+            method: "GET",
+            body: JSON.stringify(bodyData),
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+        }).then((res) => res.text())
+            .then((res) => {
+                console.log(res);
+                console.log(JSON.parse(res));
+                this.setState({ serverResponse: res, user: JSON.parse(res) });
+                console.log(this.state.user);
+            })
+            .catch((err) => {
+              console.log(err);
+              return err;
+            });
+    }
+    //return <ul>{this.state.tags.map(tag => <li key={tag}>{tag}</li>)}</ul>;
+    componentDidMount() {
+        // react lifecycle method componentDidMount()
+        // will execute the callAPIServer() methods afteer the component mounts
+        this.callAPIServer();
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <header className="App-header">
+                    <img src={logo} className="App-logo" alt="logo" />
+                    <h1 className="App-title">
+                        Welcome to FintechSG React Course
+                    </h1>
+                    {/* <h2 className="App-intro">{this.state.serverResponse}</h2> */}
+                </header>
+                <body className="App-body">
+                    <ul>
+                        {this.state.user.map((item) => (
+                            <li>
+                                {item.user_id} {item.name} {item.mail}
+                            </li>
+                        ))}
+                    </ul>
+                </body>
+            </div>
+        );
+    }
+}
+
+export default App;
