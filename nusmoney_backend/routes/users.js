@@ -2,11 +2,6 @@ const express = require('express');
 const router = express.Router();
 const connection = require("../connection");
 
-/* GET users listing. */
-/* router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-}); */
-
 /* 
 AddUser()
  POST route for /users 
@@ -33,34 +28,27 @@ router.post("/", (request, response) => {
   });
 });
 
-// ShowUser()
-// GET route for /users query (AddUser)
+// GetUserById()
+// GET route for /users query
+// use query parameter as GET don't allow body when using fetch() function
 router.get("/", (request, response) => {
-  console.log(request.body);
   //
-    strQuery = "SELECT * FROM users";
-  if (request.body.limit > 0) {
-      strQuery += ` LIMIT ${request.body.limit}`
+  let sql = "SELECT * FROM users ";
+
+  if (request.query.name != null){
+    sql += `WHERE name = '${request.query.name}'`;
+  }
+  else if (request.query.id != null) {
+    sql += `WHERE user_id = ${request.query.id}`;
   }
 
-  connection.query(strQuery, 
-  (err, result) => {
-      if (err) {
-          response.send("Some error occur");
-      }
-      else {
-          response.send(result);
-      }    
-  });
-});
+  if (request.query.limit > 0){
+    sql += ` LIMIT ${request.query.limit}`;
+  }
 
-// GetUserById()
-// GET route for /users/id query
-// with body = { "id": 2 }
-router.get("/id", (request, response) => {
-  console.log(request.body);
-  //
-  connection.query(`SELECT * FROM users WHERE user_id = ${request.body.id}`, 
+  console.log(sql);
+
+  connection.query(sql, 
   (err, result) => {
       if (err) {
           response.send("Some id error occur");
@@ -71,31 +59,13 @@ router.get("/id", (request, response) => {
   });
 });
 
-// GetUserByName()
-// GET route for /users/id query
-// with body = { "name": "John" }
-router.get("/name", (request, response) => {
-  console.log(request.body);
-  //
-  connection.query(`SELECT * FROM users WHERE name = '${request.body.name}'`, 
-  (err, result) => {
-      if (err) {
-          response.send("Some name error occur");
-      }
-      else {
-          response.send(result);
-      }    
-  });
-});
-
 // UpdateUserName()
-// PUT route for /users/id query
-// with body = { "id": 599 }
-router.put("/name", (request, response) => {
-  console.log(request.body);
+// PUT route for /users?id=xx query
+// with body = { "name" = "..." }
+router.put("/", (request, response) => {
   //
   connection.query(`UPDATE users SET name = '${request.body.name}'
-  WHERE user_id = ${request.body.id}`, 
+  WHERE user_id = ${request.query.id}`, 
   (err, result) => {
       if (err) {
           response.send("user id error occur");
@@ -108,14 +78,17 @@ router.put("/name", (request, response) => {
 
 // DeleteUser()
 // DELETE route for /users query
-// with body = { "id": 599 }
-router.delete("/", (request, response) => {
-  console.log(request.body);
+// 
+router.delete("/:id", (request, response) => {
   //
-  connection.query(`DELETE FROM users WHERE user_id = '${request.body.id}'`, 
+  let sql = `DELETE FROM users WHERE user_id = ${request.params.id}`;
+  console.log(sql);
+  //
+  connection.query(sql, 
   (err, result) => {
       if (err) {
-          response.send("user id error occur");
+          console.log(err.sqlMessage);
+          response.send("delete user id error occur");
       }
       else {
           response.send(result);
