@@ -6,7 +6,6 @@ const connection = require("../connection");
 AddUser()
  POST route for /users 
   with body = {
-    "id":598,
     "name": "John Heng",
     "mail": "johnheng@xyz.com",
     "mobile": "91191100",

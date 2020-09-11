@@ -19,10 +19,10 @@ router.post("/", (request, response) => {
 });
 
 // delete a transaction
-router.delete("/", (request, response) => {
-  console.log(request.body);
+router.delete("/:id", (request, response) => {
+  console.log(request.params);
   //
-  connection.query(`DELETE FROM transactions WHERE id = ${request.body.id}`, 
+  connection.query(`DELETE FROM transactions WHERE id = ${request.params.id}`, 
   (err, result) => {
       if (err) {
           response.send("Some record error occur");
@@ -36,52 +36,22 @@ router.delete("/", (request, response) => {
 // ShowTransactions()
 // GET route for /transactions query (AddUser)
 router.get("/", (request, response) => {
-  console.log(request.body);
   //
-    strQuery = "SELECT * FROM transactions";
-  if (request.body.limit > 0) {
-      strQuery += ` LIMIT ${request.body.limit}`
+  strQuery = "SELECT * FROM transactions";
+  if (request.query.account_no != null) {
+    strQuery += ` WHERE acct_number = '${request.query.account_no}'`;
   }
-
-  connection.query(strQuery, 
-  (err, result) => {
-      if (err) {
-          response.send("Some error occur");
-      }
-      else {
-          response.send(result);
-      }    
-  });
-});
-
-// GetTransactionByAccount
-// GET route for /transactions query (AddUser)
-router.get("/account", (request, response) => {
-  console.log(request.body);
+  else if (request.query.id != null) {
+    strQuery = `SELECT a.user_id, t.* FROM transactions AS t
+    INNER JOIN accounts AS a
+    ON a.acct_number = t.acct_number
+    WHERE t.acct_number 
+    IN (SELECT acct_number FROM accounts WHERE user_id = ${request.query.id})`;
+  }
   //
-  strQuery = `SELECT * FROM transactions WHERE acct_number = '${request.body.account_no}'`;
-
-  connection.query(strQuery, 
-  (err, result) => {
-      if (err) {
-          response.send("Some error occur");
-      }
-      else {
-          response.send(result);
-      }    
-  });
-});
-
-// GetTransactionByUserId
-// GET route for /transactions query (AddUser)
-router.get("/id", (request, response) => {
-  console.log(request.body);
-  //
-  strQuery = `SELECT a.user_id, t.* FROM transactions AS t
-  INNER JOIN accounts AS a
-  ON a.acct_number = t.acct_number
-  WHERE t.acct_number 
-  IN (SELECT acct_number FROM accounts WHERE user_id = ${request.body.id})`;
+  if (request.body.limit > 0) {
+      strQuery += ` LIMIT ${request.query.limit}`
+  }
 
   connection.query(strQuery, 
   (err, result) => {

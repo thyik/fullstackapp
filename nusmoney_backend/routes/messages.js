@@ -19,8 +19,7 @@ router.post("/", (request, response) => {
 });
 
 // delete message
-router.delete("/", (request, response) => {
-  console.log(request.body);
+router.delete("/:message_id", (request, response) => {
   //
   connection.query(`DELETE FROM messages WHERE id = ${request.body.message_id}`, 
   (err, result) => {
@@ -38,9 +37,9 @@ router.delete("/", (request, response) => {
 router.get("/", (request, response) => {
   console.log(request.body);
   //
-    strQuery = "SELECT * FROM messages";
-  if (request.body.limit > 0) {
-      strQuery += ` LIMIT ${request.body.limit}`
+  strQuery = "SELECT * FROM messages";
+  if (request.query.limit > 0) {
+      strQuery += ` LIMIT ${request.query.limit}`
   }
 
   connection.query(strQuery, 

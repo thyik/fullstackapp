@@ -40,8 +40,18 @@ router.get("/", (request, response) => {
   console.log(request.body);
   //
   strQuery = "SELECT * FROM accounts";
-  if (request.body.limit > 0) {
-      strQuery += ` LIMIT ${request.body.limit}`
+  if (request.query.id != null) {
+    strQuery += ` WHERE user_id = ${request.query.id}`
+    }
+    else if (request.query.name != null) {
+        strQuery = `SELECT u.name, a.* FROM accounts AS a
+        INNER JOIN users AS u
+        ON u.user_id = a.user_id
+        WHERE u.name = '${request.query.name}'`;
+    }
+
+  if (request.query.limit > 0) {
+      strQuery += ` LIMIT ${request.query.limit}`
   }
 
   connection.query(strQuery, 
@@ -55,50 +65,13 @@ router.get("/", (request, response) => {
   });
 });
 
+
 // DeleteAccount()
 // DELETE route for /accounts query 
-router.delete("/", (request, response) => {
-  console.log(request.body);
+router.delete("/:account_no", (request, response) => {
+  console.log(request.params);
   //
-  strQuery = `DELETE FROM accounts WHERE acct_number = '${request.body.account_no}'`;
-  console.log(strQuery);
-  connection.query(strQuery, 
-  (err, result) => {
-      if (err) {
-          response.send("Some error occur");
-      }
-      else {
-          response.send(result);
-      }    
-  });
-});
-
-// GetAccountById()
-// GET route for /accounts/id query (AddUser)
-router.get("/id", (request, response) => {
-  console.log(request.body);
-  //
-  strQuery = `SELECT * FROM accounts WHERE user_id = ${request.body.id}`;
-  connection.query(strQuery, 
-  (err, result) => {
-      if (err) {
-          response.send("Some error occur");
-      }
-      else {
-          response.send(result);
-      }    
-  });
-});
-
-// GetAccountByName()
-// GET route for /accounts/name query 
-router.get("/name", (request, response) => {
-  console.log(request.body);
-  //
-  strQuery = `SELECT u.name, a.* FROM accounts AS a
-  INNER JOIN users AS u
-  ON u.user_id = a.user_id
-  WHERE u.name = '${request.body.name}'`;
+  strQuery = `DELETE FROM accounts WHERE acct_number = '${request.params.account_no}'`;
   console.log(strQuery);
   connection.query(strQuery, 
   (err, result) => {
