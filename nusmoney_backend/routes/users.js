@@ -16,8 +16,8 @@ AddUser()
 router.post("/", (request, response) => {
   console.log(request.body);
   //
-  connection.query(`INSERT INTO users(user_id, name, mail, mobile, nric) 
-  VALUES (${request.body.id},'${request.body.name}', '${request.body.mail}', ${request.body.mobile}, '${request.body.nric}')`, 
+  connection.query(`INSERT INTO users(name, mail, mobile, nric) 
+  VALUES ('${request.body.name}', '${request.body.mail}', ${request.body.mobile}, '${request.body.nric}')`, 
   (err, result) => {
       if (err) {
           response.send("Some record error occur");
