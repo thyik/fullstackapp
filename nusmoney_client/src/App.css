@@ -24,12 +24,9 @@
   color: white;
 }
 
-.App-body {
-  text-align: left;
-}
-
 .App-list {
   text-align: left;
+  color: blue;
 }
 
 .App-link {

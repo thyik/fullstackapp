@@ -1,6 +1,8 @@
 import React from "react";
 import logo from "./logo.svg";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
+import UserList from "./components/userList";
 
 class App extends React.Component {
     constructor(props) {
@@ -48,6 +50,7 @@ class App extends React.Component {
                     </h1>
                     {/* <h2 className="App-intro">{this.state.serverResponse}</h2> */}
                 </header>
+                <UserList />
                 <div className="App-list">
                     <ul>
                         {this.state.user.map(({ user_id, name, mail, nric}) => (
