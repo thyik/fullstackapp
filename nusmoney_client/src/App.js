@@ -9,20 +9,21 @@ class App extends React.Component {
     }
 
     callAPIServer() {
-        let bodyData = {
+/*         let bodyData = {
             limit: 12,
-        };
+        }; */
 
-        console.log(JSON.stringify(bodyData));
-        fetch("http://localhost:7000/users?limit=8", {
+        // setup automatic proxy in package.json.
+        // thus eliminating the need to type "http://localhost:7000"
+        // "proxy" : "http://localhost:7000"
+        fetch("/users?limit=18", {
             method: "GET",
             /* body: JSON.stringify(bodyData), */
             headers: { "Content-type": "application/json; charset=UTF-8" },
-        }).then((res) => res.text())
-            .then((res) => {
-                console.log(res);
-                console.log(JSON.parse(res));
-                this.setState({ serverResponse: res, user: JSON.parse(res) });
+        }).then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+                this.setState({ serverResponse: JSON.stringify(data), user: data });
                 console.log(this.state.user);
             })
             .catch((err) => {
@@ -30,7 +31,7 @@ class App extends React.Component {
               return err;
             });
     }
-    //return <ul>{this.state.tags.map(tag => <li key={tag}>{tag}</li>)}</ul>;
+
     componentDidMount() {
         // react lifecycle method componentDidMount()
         // will execute the callAPIServer() methods afteer the component mounts
@@ -47,15 +48,15 @@ class App extends React.Component {
                     </h1>
                     {/* <h2 className="App-intro">{this.state.serverResponse}</h2> */}
                 </header>
-                <body className="App-body">
+                <div className="App-list">
                     <ul>
                         {this.state.user.map((item) => (
-                            <li>
+                            <li key={item.user_id}>
                                 {item.user_id} {item.name} {item.mail}
                             </li>
                         ))}
                     </ul>
-                </body>
+                </div>
             </div>
         );
     }
