@@ -7,17 +7,60 @@ import uuid from "uuid";
 class UserList extends Component {
     state = {
         items: [
-            { id: uuid(), name: "Hell1", mail: "bb", nric: "" },
-            { id: uuid(), name: "Hell2", mail: "aa", nric: "" },
+            {
+                user_id: uuid(),
+                name: "Hell1",
+                mail: "bb",
+                nric: "",
+                mobile: "",
+            },
+            {
+                user_id: uuid(),
+                name: "Hell2",
+                mail: "aa",
+                nric: "",
+                mobile: "",
+            },
         ],
     };
+
+    callAPIServer() {
+        /*         let bodyData = {
+                    limit: 12,
+                }; */
+
+        // setup automatic proxy in package.json.
+        // thus eliminating the need to type "http://localhost:7000"
+        // "proxy" : "http://localhost:7000"
+        fetch("/users?limit=18", {
+            method: "GET",
+            /* body: JSON.stringify(bodyData), */
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+                this.setState({ items: data });
+                //console.log(this.state.user);
+            })
+            .catch((err) => {
+                console.log(err);
+                return err;
+            });
+    }
+
+    componentDidMount() {
+        // react lifecycle method componentDidMount()
+        // will execute the callAPIServer() methods afteer the component mounts
+        this.callAPIServer();
+    }
 
     render() {
         // destructure {}
         const { items } = this.state;
 
         return (
-            <Container>
+            <Container className="App-list">
                 <Button
                     color="dark"
                     style={{ marginBottom: "2em" }}
@@ -28,7 +71,7 @@ class UserList extends Component {
                                 items: [
                                     ...state.items,
                                     {
-                                        id: uuid(),
+                                        user_id: uuid(),
                                         name: name,
                                         mail: "b@ccd",
                                         nric: "SSS",
@@ -43,9 +86,9 @@ class UserList extends Component {
 
                 <ListGroup>
                     <TransitionGroup className="user-list">
-                        {items.map(({ id, name, mail, nric }) => (
+                        {items.map(({ user_id, name, mail, nric, mobile }) => (
                             <CSSTransition
-                                key={id}
+                                key={user_id}
                                 timeout={500}
                                 /* className="fade" */
                             >
@@ -55,12 +98,12 @@ class UserList extends Component {
                                         color="danger"
                                         size="sm"
                                         onClick={() => {
-                                            console.log(`Delete ${id}`);
+                                            console.log(`Delete ${user_id}`);
                                         }}
                                     >
                                         &times;
                                     </Button>
-                                    {name} {nric} {mail}
+                                    {user_id} {name} {nric} {mail} {mobile}
                                 </ListGroupItem>
                             </CSSTransition>
                         ))}
