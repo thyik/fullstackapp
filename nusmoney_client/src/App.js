@@ -50,9 +50,9 @@ class App extends React.Component {
                 </header>
                 <div className="App-list">
                     <ul>
-                        {this.state.user.map((item) => (
-                            <li key={item.user_id}>
-                                {item.user_id} {item.name} {item.mail}
+                        {this.state.user.map(({ user_id, name, mail, nric}) => (
+                            <li key={user_id}>
+                                {user_id} {name} {nric} {mail}
                             </li>
                         ))}
                     </ul>
