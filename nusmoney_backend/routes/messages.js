@@ -21,7 +21,7 @@ router.post("/", (request, response) => {
 // delete message
 router.delete("/:message_id", (request, response) => {
   //
-  connection.query(`DELETE FROM messages WHERE id = ${request.body.message_id}`, 
+  connection.query(`DELETE FROM messages WHERE id = ${request.params.message_id}`, 
   (err, result) => {
       if (err) {
           response.send("Some record error occur");
@@ -38,6 +38,18 @@ router.get("/", (request, response) => {
   console.log(request.body);
   //
   strQuery = "SELECT * FROM messages";
+  if (request.query.id != null) {
+    // validation to prevent show all users
+    // eg. : "123 OR 1=1"
+    if (isNaN(request.query.id)){
+        // invalid id
+        response.send("Invalid id format occur");
+        return;
+      }
+      
+      strQuery += ` WHERE user_id = ${request.query.id}`
+ }
+
   if (request.query.limit > 0) {
       strQuery += ` LIMIT ${request.query.limit}`
   }

@@ -38,6 +38,14 @@ router.get("/", (request, response) => {
     sql += `WHERE name = '${request.query.name}'`;
   }
   else if (request.query.id != null) {
+    // validation to prevent show all users
+    // eg. : "123 OR 1=1"
+    if (isNaN(request.query.id)){
+      // invalid id
+      response.send("Invalid id format occur");
+      return;
+    }
+    //
     sql += `WHERE user_id = ${request.query.id}`;
   }
 
@@ -59,12 +67,22 @@ router.get("/", (request, response) => {
 });
 
 // UpdateUserName()
-// PUT route for /users?id=xx query
+// PUT route for /users
 // with body = { "name" = "..." }
 router.put("/", (request, response) => {
   //
+  if (request.body.id != null){
+    // validation to prevent update all users
+    // eg. : "123 OR 1=1"
+    if (isNaN(request.body.id)){
+      // invalid id
+      response.send("Invalid id format occur");
+      return;
+    }
+  }
+
   connection.query(`UPDATE users SET name = '${request.body.name}'
-  WHERE user_id = ${request.query.id}`, 
+  WHERE user_id = ${request.body.id}`, 
   (err, result) => {
       if (err) {
           response.send("user id error occur");
@@ -79,6 +97,16 @@ router.put("/", (request, response) => {
 // DELETE route for /users query
 // 
 router.delete("/:id", (request, response) => {
+  //
+  if (request.params.id != null){
+    // validation to prevent delete all users
+    // eg. : "123 OR 1=1"
+    if (isNaN(request.params.id)){
+      // invalid id
+      response.send("Invalid id format occur");
+      return;
+    }
+  }
   //
   let sql = `DELETE FROM users WHERE user_id = ${request.params.id}`;
   console.log(sql);

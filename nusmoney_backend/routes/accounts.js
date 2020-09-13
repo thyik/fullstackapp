@@ -37,11 +37,11 @@ router.post("/", (request, response) => {
 // ShowAccounts()
 // GET route for /accounts query (AddUser)
 router.get("/", (request, response) => {
-  console.log(request.body);
+  console.log(request.query);
   //
   strQuery = "SELECT * FROM accounts";
   if (request.query.id != null) {
-    strQuery += ` WHERE user_id = ${request.query.id}`
+    strQuery += ` WHERE user_id = ${request.query.id}`;
     }
     else if (request.query.name != null) {
         strQuery = `SELECT u.name, a.* FROM accounts AS a
@@ -49,11 +49,18 @@ router.get("/", (request, response) => {
         ON u.user_id = a.user_id
         WHERE u.name = '${request.query.name}'`;
     }
+    else if (request.query.account_no != null) {
+        strQuery = `SELECT a.* FROM accounts AS a
+        WHERE a.acct_number = '${request.query.account_no}'`;
+
+
+    }
 
   if (request.query.limit > 0) {
       strQuery += ` LIMIT ${request.query.limit}`
   }
-
+  //
+  console.log(strQuery);
   connection.query(strQuery, 
   (err, result) => {
       if (err) {
@@ -67,7 +74,7 @@ router.get("/", (request, response) => {
 
 
 // DeleteAccount()
-// DELETE route for /accounts query 
+// DELETE route for /accounts/{account_no} query 
 router.delete("/:account_no", (request, response) => {
   console.log(request.params);
   //
@@ -85,11 +92,11 @@ router.delete("/:account_no", (request, response) => {
 });
 
 // UpdateAccountBalance()
-// PUT route for /accounts query 
-router.put("/name", (request, response) => {
+// PUT route for /accounts/balance 
+router.put("/balance", (request, response) => {
   console.log(request.body);
   //
-  strQuery = `UPDATE accounts SET balance = ${request.body.balance} WHERE acct_number = ${request.body.account_no})`;
+  strQuery = `UPDATE accounts SET balance = ${request.body.balance} WHERE acct_number = '${request.body.account_no}')`;
   console.log(strQuery);
   connection.query(strQuery, 
   (err, result) => {
