@@ -1,0 +1,25 @@
+.container{
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+#navbar {
+    background-color: rgb(47, 124, 67);
+    color: #fff;
+}
+#navbar ul{
+    padding: 0;
+    list-style: none;
+}
+
+#navbar li{
+    display: inline;
+}
+
+#navbar a{
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    padding-right: 15px;
+}
