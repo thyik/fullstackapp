@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Datatable from "react-bs-datatable";
 
-class AccountList extends Component {
+class MessageList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -10,20 +10,15 @@ class AccountList extends Component {
             items: [],
         };
         this.header = [
-            { title: "ID", prop: "user_id", sortable: true, filterable: true },
+            { title: "ID", prop: "id", sortable: true, filterable: true },
+            { title: "User ID", prop: "user_id", sortable: true, filterable: true },
             {
-                title: "Account Type",
-                prop: "acct_type",
+                title: "Date",
+                prop: "date",
                 sortable: true,
                 filterable: true,
             },
-            { title: "Account Number", prop: "acct_number", sortable: true, filterable: true },
-            {
-                title: "Balance",
-                prop: "balance",
-                sortable: true,
-                filterable: true,
-            },
+            { title: "Remark", prop: "remark", sortable: true, filterable: true },
         ];
     }
 
@@ -36,7 +31,7 @@ class AccountList extends Component {
         // setup automatic proxy in package.json.
         // thus eliminating the need to type "http://localhost:7000"
         // "proxy" : "http://localhost:7000"
-        fetch("/accounts?limit=18", {
+        fetch("/messages?limit=18", {
             method: "GET",
             /* body: JSON.stringify(bodyData), */
             headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -61,53 +56,6 @@ class AccountList extends Component {
             });
     }
 
-    addAccount(bodyData) {
-
-        console.log(bodyData);
-        // setup automatic proxy in package.json.
-        // thus eliminating the need to type "http://localhost:7000"
-        // "proxy" : "http://localhost:7000"
-        fetch(`/accounts`, {
-            method: "POST",
-            body: JSON.stringify(bodyData),
-            headers: { "Content-type": "application/json; charset=UTF-8" },
-        })
-            .then((res) => res.text())
-            .then((data) => {
-                console.log(data);
-                
-                //this.setState({ items: data });
-                //console.log(this.state.user);
-            })
-            .catch((err) => {
-                console.log(err);
-                
-                return err;
-            });
-    }
-
-    deleteAccount(id) {
-
-        // setup automatic proxy in package.json.
-        // thus eliminating the need to type "http://localhost:7000"
-        // "proxy" : "http://localhost:7000"
-        fetch(`/accounts/${id}`, {
-            method: "DELETE"
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data);
-                alert(`Deleted user ${id}`);
-                //this.setState({ items: data });
-                //console.log(this.state.user);
-            })
-            .catch((err) => {
-                console.log(err);
-                alert(`Fail to delete user ${id}`);
-                return err;
-            });
-    }
-
     componentDidMount() {
         // react lifecycle method componentDidMount()
         // will execute the callAPIServer() methods afteer the component mounts
@@ -127,11 +75,11 @@ class AccountList extends Component {
                     <Datatable
                         tableHeaders={this.header}
                         tableBody={this.state.items}
-                        keyName="accountTable"
+                        keyName="messageTable"
                         tableClass="striped hover responsive"
                         rowsPerPage={3}
                         rowsPerPageOption={[3, 5, 8, 10]}
-                        initialSort={{ prop: "user_id", isAscending: true }}
+                        initialSort={{ prop: "id", isAscending: true }}
                     />
                 </div>
             );
@@ -139,4 +87,4 @@ class AccountList extends Component {
     }
 }
 
-export default AccountList;
+export default MessageList;
