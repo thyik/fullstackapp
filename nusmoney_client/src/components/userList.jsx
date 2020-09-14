@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Container, ListGroup, ListGroupItem, Button } from "reactstrap";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import deleteUser from '../logic/usersFetch';
 
 import uuid from "uuid";
 
@@ -75,7 +76,7 @@ class UserList extends Component {
                                         color="danger"
                                         size="sm"
                                         onClick={() => {
-                                            this.deleteUser(user_id);
+                                            deleteUser(user_id);
                                             console.log(`Delete ${user_id}`);
                                         }}
                                     >

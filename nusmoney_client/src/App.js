@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import logo from "./logo.svg";
+import logo from "./logos/brand-logo.png";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 

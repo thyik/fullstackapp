@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import apiFetch from '../logic/usersFetch';
 
 import uuid from "uuid";
 
@@ -35,34 +36,11 @@ class UserDelete extends Component {
         alert(`User Id  ${this.state.value} was submitted`);
         event.preventDefault();
 
-        this.deleteUser(this.state.value);
+        apiFetch.deleteUser(this.state.value);
     }
-    
 
     callAPIServer() {
 
-    }
-
-    deleteUser(id) {
-
-        // setup automatic proxy in package.json.
-        // thus eliminating the need to type "http://localhost:7000"
-        // "proxy" : "http://localhost:7000"
-        fetch(`/users/${id}`, {
-            method: "DELETE"
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data);
-                //alert(`Deleted user ${id}`);
-                //this.setState({ items: data });
-                //console.log(this.state.user);
-            })
-            .catch((err) => {
-                console.log(err);
-                alert(`Fail to delete user ${id}`);
-                return err;
-            });
     }
 
     componentDidMount() {

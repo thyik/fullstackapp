@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Input from "./Input";
 import Button from "./Button";
 import uuid from "uuid";
+import apiFetch from '../../logic/usersFetch';
 
 class FormContainer extends Component {
     constructor(props) {
@@ -38,7 +39,7 @@ class FormContainer extends Component {
         e.preventDefault();
         let userData = this.state.newUser;
         console.log("Form submit");
-        this.addUser(userData);
+        apiFetch.addUser(userData);
     }
 
     handleClearForm(e) {
@@ -53,28 +54,6 @@ class FormContainer extends Component {
                 mobile: "",
             },
         });
-    }
-
-    addUser(bodyData) {
-        console.log(bodyData);
-        // setup automatic proxy in package.json.
-        // thus eliminating the need to type "http://localhost:7000"
-        // "proxy" : "http://localhost:7000"
-        fetch(`/users`, {
-            method: "POST",
-            body: JSON.stringify(bodyData),
-            headers: { "Content-type": "application/json; charset=UTF-8" },
-        })
-            .then((res) => res.text())
-            .then((data) => {
-                console.log(data);
-                return true;
-            })
-            .catch((err) => {
-                console.log(err);
-
-                return false;
-            });
     }
 
     handleInput(e) {
